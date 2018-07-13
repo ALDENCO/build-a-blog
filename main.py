@@ -39,9 +39,8 @@ class Blog(db.Model):
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
-    blogs = Blog.query.all()
-    return render_template('blog.html',title="My Blogs", 
-        blogs=blogs)
+    return render_template('newblog.html', 
+        blog=blog)
 
 
 @app.route('/blog', methods = ['GET'])
@@ -52,9 +51,9 @@ def blog():
 
 @app.route('/entry', methods=['GET'])
 def entry():
-    id = request.args.get('blog')
-    blog = Blog.query.filter_by(id=id).first()
-    return render_template('entry.html', blog=blog)
+   blogs = Blog.query.all()
+   return render_template('blog.html',
+        blogs=blogs)
     
 
 

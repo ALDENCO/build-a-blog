@@ -2,7 +2,13 @@
 
 {% block content %}
     
-    <h1>My Blogs!</h1>
+    <h1>Welcome to My Blllllllllllllllllllogs!</h1>
+
+    <div>
+            <a href = '/blog'>Archives</a>
+            <a href = '/newblog'>New Blog</a>
+            <a href = '/blog'>My Blog</a>
+        </div>
 
     <ul>
         {% for blog in blogs %}
@@ -12,7 +18,10 @@
             {{blog.content}}
             <hr/>
         </li>
-        {% endfor %}
+       
     </ul>
+
+
+    {% endfor %}
 
 {% endblock %}
