@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+    <h1>{{blog.title}}</h1>
+    <br>
+    {{blog.content}}
+
+
+    <ul>
+            {% for blog in blogs %}
+            <li>{{blog.name}}
+                <form method="GET" action="/new-blog" style="display:inline-block;">
+                    <input type="hidden" name="blog-id" value="{{blog.id}}" />
+                    <input type="submit" value="Blog Posted!" />
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+{% endblock %}
