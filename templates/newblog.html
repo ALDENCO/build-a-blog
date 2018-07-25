@@ -1,32 +1,28 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>New Blog Post!</h1>
+<h1>New Blog Entry</h1>
 <form method='post'>
     <label>
        Title:
     </label>
+    <br>
     <textarea name = "title"></textarea>
+    <br>
     <label>
         Content:
     </label>
+    <br>
         <textarea name = "content"></textarea>
     </label>
+    <br>
+    <br>
+    <br>
     <input type="submit" value='Update Blog Content' />
 </form>
 
-<hr />
 
-        <ul>
-            {% for blog in blogs %}
-            <li>{{blog.name}}
-                <form method="POST" action="/new-blog" style="display:inline-block;">
-                    <input type="hidden" name="blog-id" value="{{blog.id}}" />
-                    <input type="submit" value="Blog Posted!" />
-                </form>
-            </li>
-            {% endfor %}
-        </ul>
+        
 
 
 
