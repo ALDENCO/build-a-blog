@@ -13,14 +13,16 @@ db = SQLAlchemy(app)
 def new_blog():
     owner = User.query.filter_by(email =session['email']).first()
     if request.method == 'POST':
+        #import pdb
+        #pdb.set_trace()
         title = request.form['title']
         content = request.form['content']
         if title != "" and content !="":
-            new_blog = Blog(title, content)
+            new_blog = Blog(title, content,owner)
             db.session.add(new_blog)
             db.session.commit()
             blog = Blog.query.filter_by(id=new_blog.id, owner = owner).first() 
-            return render_template('entry.html', blog=blog, owner = owner)
+            return render_template('blog.html', blog=blog, owner = owner)
            
         else:
             flash('Nothing entered','error')
@@ -39,8 +41,8 @@ class User(db.Model):
         self.password = password
         self.owner = owner
     
-   # def __repr__(self):
-        #return '<User %r>' % self.email
+    def __repr__(self):
+        return '<User %r>' % self.email
 
 class Blog(db.Model):
 
@@ -53,13 +55,20 @@ class Blog(db.Model):
         self.title = title
         self.content = content
         self.owner = owner
-        
+    
+    def __repr__(self):
+        return '<Blog %r>' % self.title
 
 
-@app.route('/', methods=['POST', 'GET'])
+@app.route('/', methods=['GET'])
 def index():
-    return render_template('newblog.html', 
-        blog=blog)
+    owner = request.args.get('user')
+    if owner:
+        blogs = Blog.query.filter_by(owner_id=owner).all()
+  
+    users = User.query.all()
+    blogs = Blog.query.all()
+    return render_template('index.html', blogs= blogs, users = users, owner = owner)
 
 
 @app.route('/blog', methods = ['GET'])
@@ -83,7 +92,7 @@ def login():
         if users.count() == 1:
             user = users.first()
             if password == user.password:
-                session['user'] = user.email
+                session['email'] = user.email
                 flash('welcome back, '+user.email)
                 return redirect("/")
         flash('bad email or password')
@@ -125,10 +134,27 @@ def is_email(string):
         domain_dot_present = domain_dot_index >= 0
         return domain_dot_present
 
+
+@app.route('/individual_blog/<blog_id>', methods=['GET'])
+def individual_blog(blog_id):
+
+    #get the blog from the database using the ID!!!!
+    blog_id = Blog.query.filter_by(id=blog_id).first()
+    indi_title = blog_id.title
+    indi_content = blog_id.content 
+    
+    return render_template('individual_blog.html', title=indi_title, content=indi_content)
+
 @app.route("/logout", methods=['POST'])
 def logout():
     del session['user']
     return redirect("/")
+
+@app.before_request
+def require_login():
+    allowed_routes = ['/login', '/register']
+    if request.endpoint not in allowed_routes and 'email' not in session:
+        return redirect('/login')
 
 app.secret_key = "kPmIIcAYqyJhc6TJQK7j"
 
